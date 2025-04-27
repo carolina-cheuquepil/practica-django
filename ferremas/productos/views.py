@@ -25,3 +25,8 @@ def crear(request):
 def editar(request):
     return render(request, "crud/editar.html")
 
+def eliminar(request, id):
+    producto = Producto.objects.get(producto_id=id)
+    producto.delete()
+    return redirect('productos')
+

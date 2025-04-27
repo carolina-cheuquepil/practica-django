@@ -1,45 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
-# Gestor personalizado para Usuario
-class UsuarioManager(BaseUserManager):
-    def create_user(self, email, nombre_usuario, contrasena=None, **extra_fields):
-        if not email:
-            raise ValueError('El usuario debe tener un email')
-        email = self.normalize_email(email)
-        usuario = self.model(email=email, nombre_usuario=nombre_usuario, **extra_fields)
-        usuario.set_password(contrasena)
-        usuario.save(using=self._db)
-        return usuario
-
-    def create_superuser(self, email, nombre_usuario, contrasena=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        return self.create_user(email, nombre_usuario, contrasena, **extra_fields)
-
-# Modelo base Usuario
-class Usuario(AbstractBaseUser, PermissionsMixin):
-    PERFIL_CHOICES = [
-        ('Cliente', 'Cliente'),
-        ('Trabajador', 'Trabajador'),
-    ]
-
-    nombre_usuario = models.CharField(max_length=100)
-    rut = models.CharField(max_length=15, null=True, blank=True)
-    email = models.EmailField(unique=True)
-    telefono = models.CharField(max_length=20, null=True, blank=True)
-    usuario = models.CharField(max_length=100)
-    perfil = models.CharField(max_length=20, choices=PERFIL_CHOICES)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
-    objects = UsuarioManager()
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nombre_usuario', 'usuario']
-
-    def __str__(self):
-        return self.nombre_usuario
 
 
 # Create your models here.
